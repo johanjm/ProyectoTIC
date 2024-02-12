@@ -79,9 +79,34 @@ Para configurar un entorno de desarrollo local, se pueden seguir los siguientes 
 
 <br/>
 
-1.  Agrega variables de entorno en el proyecto raíz, como **.env**. Algunas de estas se muestran en **./lib/constants.ts**
+1.  Agrega variables de entorno en el proyecto raíz, como **.env**
 
-2.  Luego, coloca todas las migraciones en la base de datos con este comando:
+```bash
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/webscrapping?schema=public
+BLOB_READ_WRITE_TOKEN="vercel_blob_rw_1dh5zqW7U0xFDgEr_PK9m181RKqz7QfGdpKcJZF8oraLqjW"
+# CLOUD DB
+# DATABASE_URL=postgresql://makeapp_heroe:heroe17.@postgresql-makeapp.alwaysdata.net:5432/makeapp_webscrapping?schema=public
+
+SECRET_HASH='ipnYi9wYv1vFhAev3ByNLkauZqaiDuKCowxJZ74brs8='
+NEXTAUTH_SECRET='QjVD3Sf05NcmJtON1GSvkpp4IjacmvNT9seAilNm0LQ='
+NEXTAUTH_URL=localhost:3000
+APP_ENV='development'
+
+OWNER='Johan Quinatoa'
+PROXY_AND_PORT=23.26.236.11:3128
+
+# PROXY_AND_PORT=190.97.238.91:999
+
+# websites to scrype
+AMAZON_ADDRESS=https://www.amazon.com
+BOOKS_ADDRESS=https://books.toscrape.com/
+BOT_DETECT_ADDRESS=https://bot.sannysoft.com/
+MERCADO_LIBRE=https://www.mercadolibre.com.ec/
+INSTAGRAM=https://www.instagram.com
+
+```
+
+3.  Luego, coloca todas las migraciones en la base de datos con este comando:
     <br/>
 
 ```bash
