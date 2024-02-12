@@ -80,6 +80,7 @@ Para configurar un entorno de desarrollo local, se pueden seguir los siguientes 
 <br/>
 
 1.  Agrega variables de entorno en el proyecto raíz, como **.env**
+
 ```bash
 DATABASE_URL=postgresql://postgres:postgres@localhost:5432/webscrapping?schema=public
 BLOB_READ_WRITE_TOKEN="vercel_blob_rw_1dh5zqW7U0xFDgEr_PK9m181RKqz7QfGdpKcJZF8oraLqjW"
