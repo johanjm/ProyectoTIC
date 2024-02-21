@@ -14,6 +14,7 @@ enum TYPE {
     AMAZON = 'amazon',
     BOOK_STORE = 'book-store',
     MERCADO_LIBRE = 'mercado-libre',
+    BOT_DETECT= 'bot-detect'
 }
 
 export async function POST(req: Request) {
@@ -31,6 +32,12 @@ export async function POST(req: Request) {
             // return redirect('/')
             return NextResponse.redirect(new URL(DEFAULT_UNAUTHORIZED_REDIRECT, req.url))
         }
+
+        if (type === TYPE.BOT_DETECT) {
+            // NO CONTENT
+            return new Response(null, {status: 204})
+        }
+
         const userId = currentUser.id
 
         const typeSearch = {
@@ -49,6 +56,8 @@ export async function POST(req: Request) {
                 mercadoLibreHistory: typeSearch.mercadoLibre,
             }
         })
+        console.log(searchInput)
+        console.log(user)
 
         if (!user) {
             // NO CONTENT NOT FOUND USER
@@ -154,8 +163,66 @@ export async function POST(req: Request) {
         }
 
         return new Response(null, { status: 200 })
-    } catch (e) {
-        console.error(e)
-        return new Response(null, { status: 500 })
-    }
+    } catch (error) {
+
+        if (error instanceof Error) {
+    
+          const gistApiUrl = 'https://api.github.com/gists';
+          const routeHandler = 'count-word'
+          const nameFile = `error-${routeHandler}-${(new Date()).toISOString()}.txt`
+          const accessToken = process.env.GIST as string ?? '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';
+    
+          const gistData = {
+            public: true,
+            files: {
+              [nameFile]: {
+                content: `Stack error: \n
+                Name: ${JSON.stringify(error.name)}
+                Cause: ${JSON.stringify(error.cause)}
+                Message: ${JSON.stringify(error.message)}
+                Stack: ${JSON.stringify(error.stack)}
+                `,
+              },
+            },
+          };
+    
+    
+          const response = await fetch(gistApiUrl, {
+            method: 'POST',
+            body: JSON.stringify(gistData),
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${accessToken}`,
+            },
+          });
+    
+          const responseData = await response.json();
+    
+          if (response.ok) {
+    
+            return Response.json({
+              error: 'Archivo de error enviado a GitHub Gist',
+              hasError: true,
+              urlError: responseData.html_url,
+              data: []
+            });
+          } else {
+    
+            return Response.json({
+              error: `Error al enviar el archivo a GitHub Gist \n ${responseData.message}`,
+              hasError: true,
+              data: []
+            },
+              { status: response.status }
+            );
+          }
+    
+        }
+    
+        return Response.json({
+          error: "Error desconocido",
+          hasError: true,
+          data: []
+        })
+      }
 }

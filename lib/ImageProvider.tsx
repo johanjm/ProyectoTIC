@@ -1,12 +1,14 @@
 import Image from "next/image";
+import { cn } from "./utils";
 
 const isKnownProvider = (imageUrl: string) => {
   const url = new URL(imageUrl);
   const domain = url.hostname;
   return knownDomains.includes(domain);
 };
-function ImageProvider({ imageUrl, alt }: { imageUrl: string, alt: string }) {
+function ImageProvider({ imageUrl, alt, className }: { imageUrl: string, alt: string, className?: string }) {
   const hasProvider = isKnownProvider(imageUrl);
+  console.log(hasProvider)
 
   if (hasProvider) {
     // WITH PROVIDER
@@ -16,7 +18,7 @@ function ImageProvider({ imageUrl, alt }: { imageUrl: string, alt: string }) {
         objectFit="cover"
         layout="fill"
         alt={alt}
-        className="z-0"
+        className={cn("z-0", className)}
         onError={(event: React.SyntheticEvent<HTMLImageElement, Event>) => {
           const target = event.target as HTMLImageElement;
           // prevent broken image
@@ -30,7 +32,7 @@ function ImageProvider({ imageUrl, alt }: { imageUrl: string, alt: string }) {
       <img
         src={imageUrl}
         alt={alt}
-        className="w-full h-full"
+        className={cn("w-full h-full", className)}
         width={"100%"}
         height={"100%"}
         onError={(event: React.SyntheticEvent<HTMLImageElement, Event>) => {
@@ -53,6 +55,7 @@ export const knownDomains = [
   "scontent-lax3-1.cdninstagram.com",
   "scontent-ams2-1.cdninstagram.com",
   "instagram.fcpv15-1.fna.fbcdn.net",
+  'instagram.fuio35-1.fna.fbcdn.net',
   "books.toscrape.com",
   "cloudflare-ipfs.com",
   "avatars.githubusercontent.com",

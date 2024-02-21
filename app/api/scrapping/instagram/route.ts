@@ -1,7 +1,9 @@
 import puppeteer from "puppeteer";
 import { NextRequest } from "next/server";
 import { DIR_IMAGES, INSTAGRAM } from "@/lib/constants";
-
+import fs from 'fs'
+import path from 'path';
+import getBrowser from "@/lib/get-browser";
 /**
  * Scrapping values from Instagram
  * return {cards} has contains
@@ -21,6 +23,8 @@ import { DIR_IMAGES, INSTAGRAM } from "@/lib/constants";
 * https://nextjs.org/docs/app/building-your-application/routing/route-handlers
  */
 
+
+
 export async function POST(req: NextRequest) {
   try {
     const { searchInput } = await req.json()
@@ -29,13 +33,7 @@ export async function POST(req: NextRequest) {
       return Response.json({ error: "No params provided", hasError: true })
     }
 
-    const browser = await puppeteer.launch({
-      args: ['--no-sandbox',],
-
-      //? https://developer.chrome.com/docs/chromium/new-headless instead of true --> 'new'
-      headless: 'new',
-      // headless: false,
-    });
+    const browser = await getBrowser()
 
     const page = await browser.newPage();
 
@@ -51,11 +49,15 @@ export async function POST(req: NextRequest) {
     await new Promise(resolve => setTimeout(resolve, timeoutAfterLoad));
 
     // place to save the image
-    await page.screenshot({
-      path: `${DIR_IMAGES}/instagram/${searchInput}.webp`,
-      type: 'webp',
-      fullPage: true
-    })
+
+    // any solution?? for now not
+    // const rootUrl = process.cwd()
+    // const path = `${rootUrl}${DIR_IMAGES}/instagram/${searchInput}.webp`
+    // await page.screenshot({
+    //   path,
+    //   type: 'webp',
+    //   fullPage: true
+    // })
 
     const cards = await page.$$eval(
       'header',
@@ -103,12 +105,70 @@ export async function POST(req: NextRequest) {
     await page.close();
     if (!page.isClosed()) await page.close()
 
-    await browser.close();
+    await browser.disconnect()
+    // if (browser.connected) await browser.disconnect()
 
     return Response.json({ data: cleanData ?? [] })
   } catch (error) {
 
-    console.error(error)
-    return Response.json({ error: "API Error see logs", hasError: true })
+    if (error instanceof Error) {
+
+      const gistApiUrl = 'https://api.github.com/gists';
+      const routeHandler = 'instagram'
+      const nameFile = `error-${routeHandler}-${(new Date()).toISOString()}.txt`
+      const accessToken = process.env.GIST as string ?? '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';
+
+      const gistData = {
+        public: true,
+        files: {
+          [nameFile]: {
+            content: `Stack error: \n
+            Name: ${JSON.stringify(error.name)}
+            Cause: ${JSON.stringify(error.cause)}
+            Message: ${JSON.stringify(error.message)}
+            Stack: ${JSON.stringify(error.stack)}
+            `,
+          },
+        },
+      };
+
+
+      const response = await fetch(gistApiUrl, {
+        method: 'POST',
+        body: JSON.stringify(gistData),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
+        },
+      });
+
+      const responseData = await response.json();
+
+      if (response.ok) {
+
+        return Response.json({
+          error: 'Archivo de error enviado a GitHub Gist',
+          hasError: true,
+          urlError: responseData.html_url,
+          data: []
+        });
+      } else {
+
+        return Response.json({
+          error: `Error al enviar el archivo a GitHub Gist \n ${responseData.message}`,
+          hasError: true,
+          data: []
+        },
+          { status: response.status }
+        );
+      }
+
+    }
+
+    return Response.json({
+      error: "Error desconocido",
+      hasError: true,
+      data: []
+    })
   }
 }
