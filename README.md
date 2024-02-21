@@ -106,8 +106,7 @@ INSTAGRAM=https://www.instagram.com
 
 ```
 
-
-2.  Luego, coloca todas las migraciones en la base de datos con este comando:
+3.  Luego, coloca todas las migraciones en la base de datos con este comando:
     <br/>
 
 ```bash
