@@ -32,8 +32,8 @@
 
 - [Tabla de contenido](#table-of-content)
 - [Introduccion](#introduction)
-  - [Manual de nstalacion](#instalation-manual)
-- [Produccion](#production)
+  - [Manual de Instalacion](#Manual-de-instalacion)
+- [Manual de Usuario](#Manual-de-usuario)
   - [Configuracion de la Database](#database-setup)
   - [Seguridad](#security)
 
@@ -41,7 +41,7 @@
 
 Es un proyecto de desarrollo de código abierto diseñado para fines de scraping y permite una personalización del código sin esfuerzo, ofreciendo una amplia gama de capacidades de scraping meticulosamente adaptadas y siguiendo las mejores prácticas de la industria.
 
-### Instalation Manual
+### Manual de Instalacion
 
 Primero, es fundamental conocer algunos requisitos previos para ejecutar este proyecto y trabajar en su desarrollo.
 
@@ -106,7 +106,7 @@ INSTAGRAM=https://www.instagram.com
 
 ```
 
-3.  Luego, coloca todas las migraciones en la base de datos con este comando:
+2.  Luego, coloca todas las migraciones en la base de datos con este comando:
     <br/>
 
 ```bash
@@ -159,11 +159,11 @@ git rm --cached -r .env*
 
 </details>
 
-## Produccion
+## Manual de usuario
 
-Este proyecto esta desplegado utlizando [Vercel Docs](https://vercel.com/docs). Recomiendo seguir la documentacion [Deploy Docs](https://vercel.com/docs/getting-started-with-vercel/import) paso a paso para ejecutarla en NextJS
+En el siguiente link se puede visualizar un video con la explicacion de la funcionalidad y tambien el manual de usuario del proyecto[Link Youtube](https://youtu.be/kNHfChqpyF0?si=TMeuIMpoHzF6-OcM). 
 
-Protyecto en produccion [Produccion :rocket:](https://puppeteer-nextjs-blond.vercel.app/)
+
 
 ### Configuracion de la Database
 
